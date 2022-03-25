@@ -128,6 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/OpenCvApp/TestVideos
+
+/MonitorApp/TestVideos
+/MonitorApp/yolov5m6.pt
 
 
