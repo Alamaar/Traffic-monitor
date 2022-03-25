@@ -1,4 +1,5 @@
 import argparse
+import cv2
 
 import numpy as np
 import torch
@@ -8,9 +9,11 @@ from typing import Union, List, Optional
 import norfair
 from norfair import Detection, Tracker, Video, drawing
 
+
+
 #from monitor import Monitor
 
-#import monitor
+from monitor import Monitor, Monitor_object
 
 
 max_distance_between_points: int = 200
@@ -131,13 +134,28 @@ def main():
             distance_function=euclidean_distance,
             distance_threshold=max_distance_between_points)
 
-    #monitor = Monitor()
+
+    fps = video.output_fps
+
+    monitor = Monitor(fps, px_to_m=67.5)
+    
     
 
+    for frame in video:
+        height, witdh, channels = frame.shape
+        break
+
+
+    margin_left = 100
+    margin_right = witdh - margin_left
 
 
 #""" 0 person 1 bicycle  2 car 3 motocycle 5 bus 7 truck   16 dog       """
     for frame in video:
+
+       
+
+        
 
     
 
@@ -152,23 +170,27 @@ def main():
 
         
 
+        ## tracked objets -> obj id, class name, location, 
 
-
-
-      
+        monitor_objects = []
 
         for obj in tracked_objects:
-            print(obj)
 
-            if obj.last_detection.label == "car":
-                if obj.estimate[obj.live_points].any():
-                    position = drawing.centroid(obj.estimate[obj.live_points])
+            if obj.estimate[obj.live_points].any():
+                print()
+                print(obj)
+                print(obj.estimate)
+                position = drawing.centroid(obj.estimate[obj.live_points])
 
-                    if position[0] > 100 or position[0] < 1800: # x cooridinate
-                        #append to list obj.id, positon
-                        pass
-                        
+                if position[0] > margin_left or position[0] < margin_right: # x cooridinate
 
+                    id = obj.id
+                    class_name = obj.last_detection.label
+   
+                    monitor_objects.append([id, class_name, position])
+
+                       
+        monitor.update(monitor_objects)
                         
 
 
@@ -181,6 +203,10 @@ def main():
         norfair.draw_tracked_objects(frame, tracked_objects)
 
         video.show(frame)
+
+
+
+    #print(monitor.finnished_objects)
 
 
 if __name__ == "__main__":
