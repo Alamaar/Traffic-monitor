@@ -137,7 +137,10 @@ def main():
 
     fps = video.output_fps
 
-    monitor = Monitor(fps, px_to_m=67.5)
+    time = 0.0
+    timestep = 1/fps
+
+    monitor = Monitor(fps, px_to_m=110)
     
     
 
@@ -153,7 +156,7 @@ def main():
 #""" 0 person 1 bicycle  2 car 3 motocycle 5 bus 7 truck   16 dog       """
     for frame in video:
 
-       
+        time = time + timestep
 
         
 
@@ -177,10 +180,10 @@ def main():
         for obj in tracked_objects:
 
             if obj.estimate[obj.live_points].any():
-                print()
-                print(obj)
-                print(obj.estimate)
-                position = drawing.centroid(obj.estimate[obj.live_points])
+                #print()
+                #print(obj)
+                #print(obj.last_detection.points)
+                position = norfair.centroid(obj.estimate[obj.live_points])
 
                 if position[0] > margin_left or position[0] < margin_right: # x cooridinate
 
@@ -190,7 +193,7 @@ def main():
                     monitor_objects.append([id, class_name, position])
 
                        
-        monitor.update(monitor_objects)
+        monitor.update(monitor_objects, time)
                         
 
 
