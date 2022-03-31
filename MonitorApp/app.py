@@ -9,6 +9,8 @@ from typing import Union, List, Optional
 import norfair
 from norfair import Detection, Tracker, Video, drawing
 
+import time as T
+
 
 
 #from monitor import Monitor
@@ -127,7 +129,10 @@ def main():
     model = YOLO(detector_path, device)
 
 
-    video = Video(input_path="./TestVideos/Video1.mp4")
+    #video = Video(input_path="./TestVideos/Video1.mp4")
+    #video = Video(0)
+    cap = cv2.VideoCapture(0)
+
 
 
     tracker = Tracker(
@@ -135,25 +140,24 @@ def main():
             distance_threshold=max_distance_between_points)
 
 
-    fps = video.output_fps
+    #fps = video.output_fps
 
-    monitor = Monitor(fps, px_to_m=67.5)
+    time = T.time()
+
+    
+
+    
+
+    monitor = Monitor("car", 4.5,(100, 1080-100))
     
     
-
-    for frame in video:
-        height, witdh, channels = frame.shape
-        break
-
-
-    margin_left = 100
-    margin_right = witdh - margin_left
 
 
 #""" 0 person 1 bicycle  2 car 3 motocycle 5 bus 7 truck   16 dog       """
-    for frame in video:
+    while True:
 
-       
+        time = T.time()
+        ret, frame = cap.read()
 
         
 
@@ -172,25 +176,29 @@ def main():
 
         ## tracked objets -> obj id, class name, location, 
 
-        monitor_objects = []
+        monitor.update(tracked_objects, time)
 
-        for obj in tracked_objects:
+        
 
-            if obj.estimate[obj.live_points].any():
-                print()
-                print(obj)
-                print(obj.estimate)
-                position = drawing.centroid(obj.estimate[obj.live_points])
+        # monitor_objects = []
 
-                if position[0] > margin_left or position[0] < margin_right: # x cooridinate
+        # for obj in tracked_objects:
 
-                    id = obj.id
-                    class_name = obj.last_detection.label
+        #     if obj.estimate[obj.live_points].any():
+        #         #print()
+        #         #print(obj)
+        #         #print(obj.last_detection.points)
+        #         position = norfair.centroid(obj.estimate[obj.live_points])
+
+        #         if position[0] > margin_left or position[0] < margin_right: # x cooridinate
+
+        #             id = obj.id
+        #             class_name = obj.last_detection.label
    
-                    monitor_objects.append([id, class_name, position])
+        #             monitor_objects.append([id, class_name, position])
 
                        
-        monitor.update(monitor_objects)
+        # monitor.update(monitor_objects, time)
                         
 
 
@@ -202,11 +210,24 @@ def main():
 
         norfair.draw_tracked_objects(frame, tracked_objects)
 
-        video.show(frame)
+
+        if cv2.waitKey(2) & 0xFF == ord('q'):
+            break
+        #video.show(frame)
+        #cv2.imshow('test',frame)
+
+        scale_percent = 300 # percent of original size
+        width = int(frame.shape[1] * scale_percent / 100)
+        height = int(frame.shape[0] * scale_percent / 100)
+        dim = (width, height)
+
+        resized = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
+
+        cv2.imshow('test',resized)
 
 
 
-    #print(monitor.finnished_objects)
+    print(monitor.finished_objects)
 
 
 if __name__ == "__main__":
