@@ -1,3 +1,4 @@
+
 require("dotenv").config()
 
 
@@ -9,8 +10,10 @@ const users = require('./routes/users');
 
 
 
+
 const routerTraficData = require('./routes/traffic_data');
 const db = require("./db");
+
 
 
 app.use(bodyParser.json());
@@ -18,6 +21,7 @@ app.use('/users', routerUser);
 app.use('/traffic_data', routerTraficData)
 
 app.set('port', (process.env.PORT || 3000));
+
 
 
 
@@ -36,6 +40,7 @@ app.get('/', async (req, res) => {
   
     
   
+
 })
 
 
