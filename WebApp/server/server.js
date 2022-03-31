@@ -1,10 +1,16 @@
+require("dotenv").config()
+
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 const routerUser = require('./routes/users')
 const users = require('./routes/users');
 
-const routerTraficData = require('./routes/traffic_data')
+
+
+const routerTraficData = require('./routes/traffic_data');
+const db = require("./db");
 
 
 app.use(bodyParser.json());
@@ -15,8 +21,21 @@ app.set('port', (process.env.PORT || 3000));
 
 
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+app.get('/', async (req, res) => {
+  
+
+  try {
+    const query = await db.query('SELECT NOW()')
+    console.log(query)
+    res.send('Hello World!')
+      
+  } catch (error) {
+      
+  }
+  
+  
+    
+  
 })
 
 
