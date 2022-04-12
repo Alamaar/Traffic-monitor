@@ -9,6 +9,7 @@ const users = require('./routes/users');
 
 
 
+
 const routerTraficData = require('./routes/traffic_data');
 const db = require("./db");
 
@@ -37,6 +38,8 @@ app.get('/', async (req, res) => {
     
   
 })
+
+
 
 
 
