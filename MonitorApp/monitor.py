@@ -1,6 +1,10 @@
+import threading
 import norfair
 import numpy as np
 import math
+import requests
+import json
+from datetime import datetime
 
 
 class Monitor_object():
@@ -62,7 +66,7 @@ class Monitor_object():
 class Monitor():
 
 
-    def __init__(self, speed_object, object_avg_lenght , margins):
+    def __init__(self, speed_object, object_avg_lenght , margins, counterLine):
         self.monitored_objects = []
         self.finnished_objects = []
         self.margins = margins
@@ -75,6 +79,8 @@ class Monitor():
         self.avg_set = False
 
         self.finished_objects = []
+
+        self.counterLine = counterLine
 
 
     def update(self, tracked_objects, timestamp):
@@ -120,16 +126,31 @@ class Monitor():
                     else:
                         self.monitored_objects.append(Monitor_object(id,class_name,position, timestamp)) ## new object
 
-
-                        
+        
+        
+        
 
         for obj in self.monitored_objects:
             obj.life = obj.life - 1
 
             if obj.life == 0:
-                ##tappamis logikka
+                self.killObject(obj, timestamp)
                 
+                        
+
+
+        #print(self.monitored_objects)
+
+
+    def killObject(self,obj,timestamp):
+        ##tappamis logikka
+
+        if obj.direction != None:
+            if self.passed_counterLine(obj.positions):
+                isoTimestamp = datetime.fromtimestamp(timestamp).replace(microsecond=0).isoformat()
+            
                 if obj.class_name == self.speed_object:
+                    
                     avg_speed = obj.kill()
                     if obj.direction == "West":
                         
@@ -138,28 +159,100 @@ class Monitor():
                         
                         avg = ((avg_speed/(sum(self.avg_e)/len(self.avg_e)))*3.6)
 
-                    self.finished_objects.append([obj.class_name,avg, obj.direction, timestamp ])
 
-                    print([obj.class_name,avg, obj.direction, timestamp ])
+                    newEntry = {
+                        "className" : obj.class_name,
+                        "obj_number" : obj.id,
+                        "speed" : avg,
+                        "direction" : obj.direction,
+                        "time" : isoTimestamp
+                    }
+
+                    #self.finished_objects.append([obj.class_name,avg, obj.direction, timestamp ])
+                    
+                    print(newEntry)
+                    self.finished_objects.append(newEntry)
+
+                    
                     
 
                 else:
 
-                    self.finished_objects.append([obj.class_name, obj.direction, timestamp ])
+                    newEntry = {
+                            "className" : obj.class_name,
+                            "obj_number" : obj.id,
+                            "direction" : obj.direction,
+                            "time" : isoTimestamp
+                        }
 
-                    print([obj.class_name, obj.direction, timestamp ])
-                
-                self.monitored_objects.remove(obj)
-                        
+                    #self.finished_objects.append([obj.class_name,avg, obj.direction, timestamp ])
+                    
+                    self.finished_objects.append(newEntry)
+                    print(newEntry)
+
+                    
+        
+        self.monitored_objects.remove(obj)
 
 
-        #print(self.monitored_objects)
+    def passed_counterLine(self,positions):
 
+        for i, position in enumerate(positions):
+            if position[0] > self.counterLine:
+                if positions[i-1][0] < self.counterLine or  positions[i+1][0] > self.counterLine:
+                    return True
+        return False
 
-                
+        
+
+    def flush(self):
+        copy = self.finished_objects.copy()
+        self.finished_objects.clear()
+        return copy
+
     
 
             
+    def star_sender(self, url, interval=60):
+        self.url = url
+        
+
+        self.exit = threading.Event()
+
+        thread = threading.Thread(target=self.run_sender, args=(interval,))
+        thread.start()
+
+        
 
 
+        
+
+
+
+    def stop_sender(self):
+
+        self.exit.set()
+        
+
+
+    def run_sender(self,interval):
+        while not self.exit.is_set():
+            
+            temp = self.flush()
+            if bool(temp):
+                temp = { 'data' : temp}
+                json_object = json.dumps(temp, indent = 4) 
+                if (json_object == {}):
+                    continue
+                resp = requests.post(self.url, json = temp )
+
+                              
+                if resp.status_code != 201:
+                    print("Sender error")
+                    print(resp.text)
+
+
+            self.exit.wait(interval)
+
+        self.exit.clear()
 

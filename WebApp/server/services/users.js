@@ -1,9 +1,13 @@
+const db = require("../db")
 
 
 
 async function createNewUser (user) {
- // Check if email exixt if not crete new user to database.
+ // Check if email exixt if not crete new user to database. ///
+ 
  //Return new user info and created id
+
+
 
 
 }

@@ -54,6 +54,9 @@ def euclidean_distance(detection, tracked_object):
     return np.linalg.norm(detection.points - tracked_object.estimate)
 
 
+def parseDatatoSender():
+    pass
+
 
 
 
@@ -64,13 +67,6 @@ def yolo_detections_to_norfair_detections(
     """convert detections_as_xywh to norfair detections
     """
     norfair_detections: List[Detection] = []
-
-
-    if track_points == "test":
-        print(yolo_detections.xyxy[0])
-        for detection in enumerate(yolo_detections.pred):
-            print(detection)
-
 
     if track_points == 'centroid':
         detections_as_xywh = yolo_detections.xywh[0]
@@ -148,7 +144,9 @@ def main():
 
     
 
-    monitor = Monitor("car", 4.5,(100, 1080-100))
+    monitor = Monitor("car", 4.5,(100, 1080-100), 500)
+
+    monitor.star_sender("http://localhost:4000/traffic_data/live",2)
     
     
 
@@ -178,30 +176,6 @@ def main():
 
         monitor.update(tracked_objects, time)
 
-        
-
-        # monitor_objects = []
-
-        # for obj in tracked_objects:
-
-        #     if obj.estimate[obj.live_points].any():
-        #         #print()
-        #         #print(obj)
-        #         #print(obj.last_detection.points)
-        #         position = norfair.centroid(obj.estimate[obj.live_points])
-
-        #         if position[0] > margin_left or position[0] < margin_right: # x cooridinate
-
-        #             id = obj.id
-        #             class_name = obj.last_detection.label
-   
-        #             monitor_objects.append([id, class_name, position])
-
-                       
-        # monitor.update(monitor_objects, time)
-                        
-
-
 
         if track_points == 'centroid':
             norfair.draw_points(frame, detections)
@@ -212,11 +186,12 @@ def main():
 
 
         if cv2.waitKey(2) & 0xFF == ord('q'):
+            monitor.stop_sender()
             break
         #video.show(frame)
         #cv2.imshow('test',frame)
 
-        scale_percent = 300 # percent of original size
+        scale_percent = 200 # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
         dim = (width, height)
@@ -224,10 +199,6 @@ def main():
         resized = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
 
         cv2.imshow('test',resized)
-
-
-
-    print(monitor.finished_objects)
 
 
 if __name__ == "__main__":
