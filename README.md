@@ -1,25 +1,26 @@
 # Traffic monitor
 
-#Info
+## Info
 This project takes live feed from webcam and calculates how many of different means of tranportation goes across the webcam feed. 
 From theese are taken time, direction(west, east) and from cars also speed is estimated.
 
-The detections are fed to server and in server data is parsed and compressed to 10 minute interval chunks, eg: 10 cars west in 10 minute time frame
+The detections are fed to server and in server data is parsed and compressed to 10 minute interval chunks
+Eq: 10 cars went west in 10 minute time frame
 
 
-#How
+## How
 
 Frameworks and libarys
 
-Monitor.app
-
-PyTorch
-Yolo5 - model detection
-NorFair - object tracking
-
+MonitorApp
+```
+-PyTorch
+-Yolo5 - model detection
+-NorFair - object tracking
+```
 WebApp
-
-Express - backend
-React - frontend
-
+```
+-Express - backend
+-React - frontend
+````
 
