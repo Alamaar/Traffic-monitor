@@ -24,21 +24,8 @@ ChartJS.register(
 
 
 
-//label options check
-//  muokata viel probseilla käytettäväksi
-// säätää näkyvyyttä paremmaksi
-//parsia aika labelit järkevämksi
-
-
-
-
-
 export function Chart(probs) {
-  //probs -labels, dataset1, dataset2, title, 
-  // skaalat voi olla kaikissa lukumäärä charteissa sama, 
-  //opsions charts puolelle
-
-  //melkee kaikki charts puolelle tai siis kaikki
+  
 
   let labels = probs.time;
 
@@ -64,7 +51,7 @@ export function Chart(probs) {
   }
 
 
-  //console.log(data)
+  
 
 
   return <Line options={options} data={data} />;

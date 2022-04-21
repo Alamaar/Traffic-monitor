@@ -104,7 +104,7 @@ function Charts(probs) {
             const trafficDataParsed  = trafficData.reduce((prev, current) =>{
 
 
-            /* muokaakohan previn muokkas olemassa olevaa taulua???
+            /* 
 
             expressiin vielä id mukaan tietoihin kun tarvii mappiin kummiskin
 
