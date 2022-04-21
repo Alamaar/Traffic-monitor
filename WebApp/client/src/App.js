@@ -3,6 +3,7 @@ import Header from './components/Header'
 import LiveFeed from './components/LiveFeed'
 import Charts from './components/Charts'
 import {Chart} from './components/Chart'
+import  placeholder from './images/screenshotplaceholder.PNG'
 
 
 function App() {
@@ -10,15 +11,18 @@ function App() {
     <div className="App">
       <Header/>
       <main>
-        <p>
-        <img alt='gif'></img>
+        <div className='Live'>
+          <div className='LiveVideo'>
+            <img  className='placeholder' src={placeholder} alt = "Placeholder" ></img>
+          </div>
 
-        </p>
+          <LiveFeed rows="-10"/>
 
-        <LiveFeed rows="-7"/>
-
+        </div>
+        
         <Charts/>
-        <Chart/>
+        
+        
 
         
 

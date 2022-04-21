@@ -223,7 +223,7 @@ var CronJob = require('cron').CronJob;
 var job = new CronJob('0 */10 * * * *', function() {
     compressTrafficData()
 });
-//job.start();
+job.start();
 
 
 module.exports.getLiveData = getLiveData

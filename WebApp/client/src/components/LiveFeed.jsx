@@ -23,15 +23,20 @@ function LiveFeed(probs) {
             
             fetch()
 
+            const interval = setInterval(()=> {
+                fetch()
+            },100);
+
+            return () => clearInterval(interval)
+            
+
         },[])
 
-        const elements  = liveData.slice(probs.rows).map((item, index) => {
-            
+        const elements  = liveData.slice(probs.rows).map((item, index) => {        
             if(item.speed === undefined){
-                return <li> {`${item.class_name}  ${item.direction}`}</li>
+                return <a className='item'> {`${item.className}  ${item.direction}`}</a>
             }
-
-            return <li> {`${item.class_name}  ${item.direction} ${item.speed} km/h`}</li>
+            return <a className='item'> {`${item.className}  ${item.direction} ${Math.floor(item.speed)} km/h`}</a>
 
 
         })
@@ -43,12 +48,9 @@ function LiveFeed(probs) {
         return (
 
 
-        <div>
-            <header>Traffic Monitor</header>
-            <ul>
+        <div  className='LiveFeed'>           
                 {elements}
-            </ul>
-
+            
         </div>
 
     )

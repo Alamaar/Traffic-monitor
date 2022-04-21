@@ -191,7 +191,7 @@ def main():
         #video.show(frame)
         #cv2.imshow('test',frame)
 
-        scale_percent = 200 # percent of original size
+        scale_percent = 170 # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
         dim = (width, height)
