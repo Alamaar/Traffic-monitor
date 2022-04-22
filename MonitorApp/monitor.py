@@ -198,9 +198,12 @@ class Monitor():
     def passed_counterLine(self,positions):
 
         for i, position in enumerate(positions):
-            if position[0] > self.counterLine:
-                if positions[i-1][0] < self.counterLine or  positions[i+1][0] > self.counterLine:
-                    return True
+            try:
+                if position[0] > self.counterLine:
+                    if positions[i-1][0] < self.counterLine or  positions[i+1][0] > self.counterLine:
+                        return True,
+            finally:
+                pass
         return False
 
         

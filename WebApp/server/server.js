@@ -8,8 +8,12 @@ const bodyParser = require('body-parser');
 const routerUser = require('./routes/users')
 const users = require('./routes/users');
 
+const cors = require("cors");
 
 
+
+
+app.use(cors());
 
 const routerTraficData = require('./routes/traffic_data');
 const db = require("./db");

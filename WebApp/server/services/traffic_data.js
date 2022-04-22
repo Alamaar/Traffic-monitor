@@ -85,7 +85,51 @@ async function getTrafficData(from, to, object  ) {
         const data = await db.query(`SELECT ${selectecColums} FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= $1 AND traffic_others.time <= $2`,[from, to] )
 
 
-        return data.rows
+        
+        const parsed = data.rows.map((item, index) => {
+            return {
+                car : {
+                    west: item.west,
+                    east: item.east,
+                    speed_west : item.speed_west,
+                    speed_east : item.speed_east
+
+                },
+                person : {
+                    west : item.person_west,
+                    east : item.person_east
+                },
+                bus : {
+                    west : item.bus_west,
+                    east : item.bus_east
+                },
+                truck : {
+                    west : item.truck_west,
+                    east : item.truck_east
+                },
+                bicycle : {
+                    west : item.bicycle_west,
+                    east : item.bicycle_east
+                },
+                dog : {
+                    west : item.dog_west,
+                    east : item.dog_east
+                },
+                motorcycle : {
+                    west : item.motorcycle_west,
+                    east : item.motorcycle_east
+                },
+                time : item.time
+
+            }
+
+
+        })
+
+        
+
+ 
+        return parsed
        } catch (error) {
            console.log(error)
            return false

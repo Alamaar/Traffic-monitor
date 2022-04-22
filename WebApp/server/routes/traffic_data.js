@@ -23,6 +23,7 @@ router.get('/', async (req,res)=> {
     const from = req.query.from 
     const to = req.query.to
     const object = req.query.object
+    console.log("fetch")
 
 
     try {
