@@ -8,7 +8,9 @@
   min-height: 5vh;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
+  
+  
   font-size: calc(10px + 2vmin);
   color: white;
 
@@ -101,6 +103,8 @@ a {
 
 .item {
   height: 10%;
+  font-family: "Times New Roman", Times, serif;
+  
   
   font-size: calc(5px + 2vmin);
   flex: end;
