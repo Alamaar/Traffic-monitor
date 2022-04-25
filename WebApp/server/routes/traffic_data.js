@@ -8,14 +8,6 @@ function dataValidator(req,res, next){
 
 }
 
-function authCheck(req,res,next){
-
-
-}
-
-
-
-
 router.get('/', async (req,res)=> {
     // get data and filter with query params
     // from, to, objects,
@@ -43,8 +35,6 @@ router.get('/', async (req,res)=> {
 
     //placeholder
    
-    
-
 
 } )
 
@@ -58,7 +48,6 @@ router.get('/info', async (req,res)=> {
 
     try {
         const data = await trafficData.getTrafficData(from, to, object)
-
         
         if (data == false){
             
@@ -78,15 +67,12 @@ router.get('/info', async (req,res)=> {
         } )
 
 
-
         //remove unused elements
         delete parsedData.time
-
         
         res.json({
             data : parsedData
         })
-
 
     }
     catch{
@@ -94,19 +80,13 @@ router.get('/info', async (req,res)=> {
 
     }
 
-
-
-
-
 })
 
 router.get('/live', async (req,res)=> {
-    //limit 100 ??
-
+    
     res.status(200).json({
         data : await trafficData.getLiveData()
     })
-
 
     
 })
@@ -117,17 +97,24 @@ router.post('/live', (req,res)=> {
     // Schema verification
     const data = req.body.data
 
+    if(req.body.api_key === process.env.API_KEY){
+        const resp = trafficData.newLiveData(data)
 
-    const resp = trafficData.newLiveData(data)
-
-    if(resp){
-        res.sendStatus(201)
-
+        if(resp){
+            res.sendStatus(201)
+        }
+        else if(!resp){
+            res.sendStatus(401)
+        }     
     }
-    else if(!resp){
-        res.sendStatus(401)
-    }
 
+    else{
+        res.status(403).send("Unauthorized")
+    }
+    
+
+
+    
 
 
 
