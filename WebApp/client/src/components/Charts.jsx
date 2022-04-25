@@ -53,6 +53,7 @@ function Charts(probs) {
                     drawTicks: true,
                   },
                 display : true,
+                
                 //type : 'time',
                 /*time: {
                   unit: 'hour',
@@ -67,6 +68,17 @@ function Charts(probs) {
                 },
                       xAxes: {
                           ticks:'auto', 
+                          type: 'time',
+                        time: {
+                            unit: 'hour',
+                            
+                            displayFormats: {
+                                hour: 'HH'
+                            },
+                            parser: function (utcMoment) {
+                                return utcMoment.utcOffset('+0300');
+                            }
+                        },
                           
                       },
                   }
@@ -228,6 +240,8 @@ function Charts(probs) {
         const elements = []
         data.labels = trafficData.time
 
+        console.log(data.labels)
+
         for(const [key, value] of Object.entries(trafficData)){
             
             if(key !== "time"){
@@ -264,6 +278,14 @@ function Charts(probs) {
            
 
         <div className='Charts'> 
+
+
+
+
+
+
+
+        
                 {elements}
         </div>
 

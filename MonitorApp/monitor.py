@@ -202,6 +202,9 @@ class Monitor():
                 if position[0] > self.counterLine:
                     if positions[i-1][0] < self.counterLine or  positions[i+1][0] > self.counterLine:
                         return True,
+            except:
+                print(position) 
+            
             finally:
                 pass
         return False

@@ -25,7 +25,7 @@ function LiveFeed(probs) {
 
             const interval = setInterval(()=> {
                 fetch()
-            },100);
+            },3000);
 
             return () => clearInterval(interval)
             
