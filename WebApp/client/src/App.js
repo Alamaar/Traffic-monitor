@@ -21,12 +21,6 @@ function App() {
         </div>
         
         <Charts/>
-        
-        
-
-        
-
-
 
 
       </main>

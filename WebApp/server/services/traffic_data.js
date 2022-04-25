@@ -67,7 +67,7 @@ async function getTrafficData(from, to, object  ) {
 
     const selectecColums = preparedColums[object] || "*"
 
-    
+    //SELECT * FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= (2022-04-24T11:09:13.000Z) AND traffic_others.time <= (2022-04-25T11:50:13.532Z);
 
    
 
@@ -80,10 +80,14 @@ async function getTrafficData(from, to, object  ) {
          //some default value if undefines
          to = 'now()'
     }
-  
+    console.log(from)
+    console.log(to)
        try {
+           console.log(`SELECT ${selectecColums} FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= ${from} AND traffic_others.time <= ${to}`)
         const data = await db.query(`SELECT ${selectecColums} FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= $1 AND traffic_others.time <= $2`,[from, to] )
-
+        
+        console.log("data")
+        console.log(data)
         console.log(data.rows)
         
         const parsed = data.rows.map((item, index) => {
