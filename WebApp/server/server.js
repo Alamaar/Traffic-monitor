@@ -21,7 +21,8 @@ const db = require("./db");
 
 
 app.use(bodyParser.json());
-app.use('/users', routerUser);
+//unfinnished
+//app.use('/users', routerUser);
 app.use('/traffic_data', routerTraficData)
 
 app.set('port', (process.env.PORT || 3000));

@@ -11,14 +11,38 @@ from norfair import Detection, Tracker, Video, drawing
 
 import time as T
 
+import os
+
+
 
 
 #from monitor import Monitor
 
 from monitor import Monitor, Monitor_object
 
-
+##Settings
 max_distance_between_points: int = 200
+detector_path = "yolov5m6.pt"
+device = None
+conf_threshold = 0.25
+iou_threshold = 0.45
+image_size = 720
+classes = [0,1,2,3,5,7,16] 
+#0 person 1 bicycle  2 car 3 motocycle 5 bus 7 truck   16 dog
+track_points = "bbox"
+speed_object = "car"
+avg_speed_object_lenght = 4.5 #in meters
+output_size = (1280, 720)
+#margins of frame area where monitor becomes active prevents false detections on edges in x axel
+monitor_margin = 200
+#at what point objects are counted
+counter_line = 500
+#interval to send data
+api_addr = "http://localhost:4000/traffic_data/live"
+api_send_interval = 2
+api_key = "test"
+
+
 
 
 class YOLO:
@@ -52,12 +76,6 @@ class YOLO:
 
 def euclidean_distance(detection, tracked_object):
     return np.linalg.norm(detection.points - tracked_object.estimate)
-
-
-def parseDatatoSender():
-    pass
-
-
 
 
 def yolo_detections_to_norfair_detections(
@@ -99,83 +117,39 @@ def yolo_detections_to_norfair_detections(
     return norfair_detections
 
 
-detector_path = "yolov5m6.pt"
-device = None
-conf_threshold = 0.25
-iou_threshold = 0.45
-image_size = 720
-classes = [0,1,2,3,5,7,16]
-track_points = "bbox"
-
-names =  ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-        'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-        'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-        'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-        'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-        'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-        'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 
-        'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 
-        'teddy bear', 'hair drier', 'toothbrush']
-
-
-#""" 0 person 1 bicycle  2 car 3 motocycle 5 bus 7 truck   16 dog       """
-
-
 def main():
     model = YOLO(detector_path, device)
 
-
-    #video = Video(input_path="./TestVideos/Video1.mp4")
-    #video = Video(0)
     cap = cv2.VideoCapture(0)
-
-
 
     tracker = Tracker(
             distance_function=euclidean_distance,
             distance_threshold=max_distance_between_points)
 
-
-    #fps = video.output_fps
-
     time = T.time()
 
+    ret, frame = cap.read()
+    width = int(frame.shape[1])
+    monitor_margins = (monitor_margin, width - monitor_margin)
+
+ 
+    monitor = Monitor(speed_object, avg_speed_object_lenght,monitor_margins, counter_line)
+
+    monitor.star_sender(api_addr,api_send_interval, api_key)
     
 
-    
-
-    monitor = Monitor("car", 4.5,(100, 1080-100), 500)
-
-    monitor.star_sender("http://localhost:4000/traffic_data/live",2)
-    
-    
-
-
-#""" 0 person 1 bicycle  2 car 3 motocycle 5 bus 7 truck   16 dog       """
     while True:
 
         time = T.time()
         ret, frame = cap.read()
 
-        
-
-    
-
         yolo_detections = model(frame, conf_threshold, iou_threshold, image_size, classes )
-
-        
+ 
         detections = yolo_detections_to_norfair_detections(yolo_detections, track_points)
         
         tracked_objects = tracker.update(detections=detections)
 
-        #print(tracked_objects)
-
-        
-
-        ## tracked objets -> obj id, class name, location, 
-
         monitor.update(tracked_objects, time)
-
 
         if track_points == 'centroid':
             norfair.draw_points(frame, detections)
@@ -188,15 +162,9 @@ def main():
         if cv2.waitKey(2) & 0xFF == ord('q'):
             monitor.stop_sender()
             break
-        #video.show(frame)
         #cv2.imshow('test',frame)
 
-        scale_percent = 170 # percent of original size
-        width = int(frame.shape[1] * scale_percent / 100)
-        height = int(frame.shape[0] * scale_percent / 100)
-        dim = (width, height)
-
-        resized = cv2.resize(frame, dim, interpolation = cv2.INTER_AREA)
+        resized = cv2.resize(frame, output_size, interpolation = cv2.INTER_AREA)
 
         cv2.imshow('test',resized)
 

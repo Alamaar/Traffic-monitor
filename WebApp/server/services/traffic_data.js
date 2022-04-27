@@ -5,11 +5,6 @@ const db = require("../db");
 let liveData = []
 
 
-/* kirjoita cron tabi ajastus muutetavaksi env muuttujalla  */
-
-
-
-
 async function newLiveData(data){
     //Saves incoming live data // 
 
@@ -21,7 +16,6 @@ async function newLiveData(data){
 async function newTrafficData(data){
     //Save traffic data
     //data format 
-
 
     try {
         const res = await db.query("insert into traffic_others ( person_west, person_east, bus_west, bus_east, truck_east, truck_west, bicycle_west, bicycle_east,dog_west, dog_east,motorcycle_west, motorcycle_east,time) Values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
@@ -67,9 +61,6 @@ async function getTrafficData(from, to, object  ) {
 
     const selectecColums = preparedColums[object] || "*"
 
-    
-
-   
 
     if (from === undefined) {
         //some default value if undefined
@@ -80,11 +71,15 @@ async function getTrafficData(from, to, object  ) {
          //some default value if undefines
          to = 'now()'
     }
-  
+    console.log(from)
+    console.log(to)
        try {
+           console.log(`SELECT ${selectecColums} FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= ${from} AND traffic_others.time <= ${to}`)
         const data = await db.query(`SELECT ${selectecColums} FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= $1 AND traffic_others.time <= $2`,[from, to] )
-
-
+        
+        console.log("data")
+        console.log(data)
+        console.log(data.rows)
         
         const parsed = data.rows.map((item, index) => {
             return {
@@ -127,8 +122,6 @@ async function getTrafficData(from, to, object  ) {
         })
 
         
-
- 
         return parsed
        } catch (error) {
            console.log(error)

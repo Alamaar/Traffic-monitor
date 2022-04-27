@@ -137,14 +137,8 @@ class Monitor():
                 self.killObject(obj, timestamp)
                 
                         
-
-
-        #print(self.monitored_objects)
-
-
     def killObject(self,obj,timestamp):
-        ##tappamis logikka
-
+        ##When objects trackin is done the object is killed and speeds calculated and then passed to finnished objects array
         if obj.direction != None:
             if self.passed_counterLine(obj.positions):
                 isoTimestamp = datetime.fromtimestamp(timestamp).replace(microsecond=0).isoformat()
@@ -167,14 +161,9 @@ class Monitor():
                         "direction" : obj.direction,
                         "time" : isoTimestamp
                     }
-
-                    #self.finished_objects.append([obj.class_name,avg, obj.direction, timestamp ])
                     
                     print(newEntry)
                     self.finished_objects.append(newEntry)
-
-                    
-                    
 
                 else:
 
@@ -185,13 +174,9 @@ class Monitor():
                             "time" : isoTimestamp
                         }
 
-                    #self.finished_objects.append([obj.class_name,avg, obj.direction, timestamp ])
-                    
                     self.finished_objects.append(newEntry)
                     print(newEntry)
-
-                    
-        
+ 
         self.monitored_objects.remove(obj)
 
 
@@ -202,6 +187,9 @@ class Monitor():
                 if position[0] > self.counterLine:
                     if positions[i-1][0] < self.counterLine or  positions[i+1][0] > self.counterLine:
                         return True,
+            except:
+                print(position) 
+            
             finally:
                 pass
         return False
@@ -216,26 +204,17 @@ class Monitor():
     
 
             
-    def star_sender(self, url, interval=60):
+    def star_sender(self, url, interval=60, api_key = "dev"):
         self.url = url
-        
-
         self.exit = threading.Event()
+        self.api_key = api_key
 
         thread = threading.Thread(target=self.run_sender, args=(interval,))
         thread.start()
 
-        
-
-
-        
-
-
-
     def stop_sender(self):
 
         self.exit.set()
-        
 
 
     def run_sender(self,interval):
@@ -243,7 +222,8 @@ class Monitor():
             
             temp = self.flush()
             if bool(temp):
-                temp = { 'data' : temp}
+                temp = { 'data' : temp,
+                        'api_key' : self.api_key}
                 json_object = json.dumps(temp, indent = 4) 
                 if (json_object == {}):
                     continue

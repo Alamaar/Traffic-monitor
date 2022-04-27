@@ -10,7 +10,7 @@ function LiveFeed(probs) {
             async function fetch(){
                 try {
                     const resp = await trafficData.get('/live')
-                    console.log(resp.data.data)
+                    //console.log(resp.data.data)
                     setData(resp.data.data)
 
                     
@@ -25,7 +25,7 @@ function LiveFeed(probs) {
 
             const interval = setInterval(()=> {
                 fetch()
-            },100);
+            },1000);
 
             return () => clearInterval(interval)
             
@@ -41,7 +41,7 @@ function LiveFeed(probs) {
 
         })
 
-        console.log(elements)
+        //console.log(elements)
 
 
 
