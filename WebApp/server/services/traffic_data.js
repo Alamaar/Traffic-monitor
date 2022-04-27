@@ -5,11 +5,6 @@ const db = require("../db");
 let liveData = []
 
 
-/* kirjoita cron tabi ajastus muutetavaksi env muuttujalla  */
-
-
-
-
 async function newLiveData(data){
     //Saves incoming live data // 
 
@@ -21,7 +16,6 @@ async function newLiveData(data){
 async function newTrafficData(data){
     //Save traffic data
     //data format 
-
 
     try {
         const res = await db.query("insert into traffic_others ( person_west, person_east, bus_west, bus_east, truck_east, truck_west, bicycle_west, bicycle_east,dog_west, dog_east,motorcycle_west, motorcycle_east,time) Values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
@@ -67,9 +61,6 @@ async function getTrafficData(from, to, object  ) {
 
     const selectecColums = preparedColums[object] || "*"
 
-    //SELECT * FROM traffic_others FULL JOIN cars ON traffic_others.time = cars.time WHERE traffic_others.time >= (2022-04-24T11:09:13.000Z) AND traffic_others.time <= (2022-04-25T11:50:13.532Z);
-
-   
 
     if (from === undefined) {
         //some default value if undefined
@@ -131,8 +122,6 @@ async function getTrafficData(from, to, object  ) {
         })
 
         
-
- 
         return parsed
        } catch (error) {
            console.log(error)

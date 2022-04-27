@@ -29,6 +29,7 @@ a {
   float: right;
   justify-content: right;
   
+  
 }
 
 .App-link {
@@ -86,10 +87,13 @@ a {
   
 }
 
+
 .LiveFeed {
-  border: #282c34;
-  border-style: solid;
+  border-radius: 4vh;
+  border: 6px solid #aaaaaa;
+  padding: 25px;
   width: 25%;
+  height: 50vh;
 
   
   
@@ -102,16 +106,36 @@ a {
 
 
 .item {
-  height: 10%;
-  font-family: "Times New Roman", Times, serif;
-  
-  
+  height: 15%;
+  font-family: "Arial", Times, Sans-serif;
   font-size: calc(5px + 2vmin);
   flex: end;
   align-content: left;
-  padding: 0;
+  padding: 2;
   align-items: left;
   text-align: left;
   
 }
 
+
+.App-texter {
+  background-color: rgb(252, 248, 248);
+  min-height: 4vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  
+  font-size: calc(14px + 2vmin);
+  color: black;
+  
+
+}
+
+
+p {
+  text-align: center;
+  color: black;
+  font-size: calc(14px + 1vmin);
+
+}

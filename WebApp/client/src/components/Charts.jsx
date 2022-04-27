@@ -141,44 +141,14 @@ function Charts(probs) {
        
 
     function parseTrafficData(trafficData){
-        //spagehetti
         
-        const trafficDataParsed  = trafficData.reduce((prev, current) =>{
+        const trafficDataParsed  = trafficData.reduce((prev, current) =>{ 
+            //*needs id for map function      
 
-
-        /* 
-
-        expressiin vielä id mukaan tietoihin kun tarvii mappiin kummiskin
-
-        */
-
-        function valuesToArrays(oldobject){
-        
-            let object = {...oldobject}
-
-            //.log(object)
-            for (const [key, value] of Object.entries(object)) {
-                
-                // console.log(typeof object[key])
-                if(Array.isArray(object[key])){
-                    //console.log("push")
-                    object[key].push(value)
-
-                }
-                else{
-                    object[key] = []
-                    object[key].push(value)
-                }
-                
-            }
-            return object
-        }
 
         for (const [key, value] of Object.entries(current)) {
-            
-            
+               
             if(value.constructor.name === "Object" && value !== undefined && value !== null){
-                //prev[key] = valuesToArrays(value)
                 for (const [key2, value2] of Object.entries(value)) {
 
                     if(prev[key] === undefined){
@@ -226,8 +196,6 @@ function Charts(probs) {
             try {
                 
                 const resp = await trafficDatafetch.get(`/?from=${encodeURIComponent(toISOLocal(date.from))}&to=${encodeURIComponent(toISOLocal(date.to))}`)
-                console.log(`/?from=${date.from.toISOString()}&to=${date.to.toISOString()}`)
-                console.log(resp.data.data)
                 setData(parseTrafficData(resp.data.data))
                       
             } catch (error) {
@@ -240,11 +208,6 @@ function Charts(probs) {
         fetch()
 
     },[date])
-
-    console.log(trafficData)
-        //console.log("parsed")
-        //console.log("rerender")
-        //console.log(east)
 
         const elements = []
         data.labels = trafficData.time
@@ -278,11 +241,6 @@ function Charts(probs) {
 
         }
         
-        console.log(trafficData)
-
-
-
-
         return (
 
            

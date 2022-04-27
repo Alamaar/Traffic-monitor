@@ -36,7 +36,7 @@ output_size = (1280, 720)
 #margins of frame area where monitor becomes active prevents false detections on edges in x axel
 monitor_margin = 200
 #at what point objects are counted
-counter_line = output_size[0]/2
+counter_line = 500
 #interval to send data
 api_addr = "http://localhost:4000/traffic_data/live"
 api_send_interval = 2
