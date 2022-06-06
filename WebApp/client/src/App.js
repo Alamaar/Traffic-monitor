@@ -2,7 +2,7 @@ import './App.css';
 import Header from './components/Header'
 import LiveFeed from './components/LiveFeed'
 import Charts from './components/Charts'
-import  placeholder from './images/screenshotplaceholder.PNG'
+//import  placeholder from './images/screenshotplaceholder.PNG'
 
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
       <main>
         <div className='Live'>
           <div className='LiveVideo'>
-            <img  className='placeholder' src={placeholder} alt = "Placeholder" ></img>
+            
             <div className="App-texter">
             <header><bold>Live data from traffic</bold></header>
             <p>Left side box shows traffic data in live. Video abowe shows realtime video.  </p>

@@ -4,6 +4,8 @@ const db = require("../db");
 
 let liveData = []
 
+let demoData = []
+
 
 async function newLiveData(data){
     //Saves incoming live data // 
@@ -35,9 +37,61 @@ async function newTrafficData(data){
 }
 
 
+function getDemoData(){
+
+    const demoDataList = ["car","person","bus","truck","bicycle","motorcycle","dog"]
+    const directions = ["West","East"]
+
+    
+    do{
+        randomNumber = Math.floor(Math.random() * 7)
+        randomDirection = Math.floor(Math.random() * 2)
+        console.log(randomDirection)
+
+        if(randomNumber === 0){
+            const lenght = demoData.push({
+                className : "car",
+                direction : directions[randomDirection],
+                speed : Math.floor(Math.random()* 50),
+                time : "2022-04-03 14:14:23"
+            })
+        }
+        else {
+            const lenght = demoData.push({
+                className : demoDataList[randomNumber],
+                "direction" : directions[randomDirection],
+                "time" : "2022-04-03 14:14:23"
+            })
+        }
+
+    }while (demoData.length < 10)
+
+
+    console.log(demoData)
+
+    return demoData
+
+
+
+
+
+
+}
+
+
 
 async function getLiveData(limit, objects){
     //get all live data, limit latest number of entys, filter by objects = ["car","bus"..etc]
+    
+
+    if(liveData.length === 0){
+        return getDemoData()
+    }
+        
+
+    getDemoData()
+    
+    
     return liveData
 
 }
